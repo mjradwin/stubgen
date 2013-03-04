@@ -1,0 +1,311 @@
+.\"
+.\"   FILE: stubgen.1
+.\" AUTHOR: Michael J. Radwin (michael@radwin.org)
+.\"  DESCR: stubgen nroff-able man page
+.\"
+.\"  Copyright (c) 2011  Michael J. Radwin
+.\" 
+.de EX		\"Begin example
+.ne 5
+.if n .sp 1
+.if t .sp .5
+.nf
+.in +5n
+..
+.de EE		\"End example
+.fi
+.in -5n
+.if n .sp 1
+.if t .sp .5
+..
+.TH stubgen 1 "11 May 2011"
+.SH NAME
+stubgen \- generate empty member function skeletons from a C++ header file
+.SH SYNOPSIS
+.PP
+.B stubgen
+\%[\-hqrivgacdtlN]
+\%[\-e \fIext\fR]
+\%[\-{bfsn}]
+\%[\fIinfiles\fR]
+.SH DESCRIPTION
+.B stubgen
+is a C++ development tool that keeps code files in sync with their
+associated headers.  When it finds a member function declaration in a
+header file that doesn't have a corresponding implementation, it creates
+an empty skeleton with descriptive comment headers.
+.PP
+For example, suppose you have the following header file Point.h:
+.EX
+class Point {
+public:
+    Point(int x, int y);
+    void addTo(const Point& other);
+
+    int xValue, yValue;
+};
+.EE
+Running "stubgen -n Point.h" would produce the following file:
+.EX
+/***********************************************
+ * AUTHOR: Michael Radwin <mjr@acm.org>
+ *   FILE: Point.cpp
+ *   DATE: Mon Apr 20 17:39:05 1998
+ *  DESCR: 
+ ***********************************************/
+#include "Point.h"
+ 
+Point::Point(int x, int y) 
+{
+}
+ 
+void
+Point::addTo(const Point& other) 
+{
+}
+.EE
+.PP
+If no input files are listed on the command line,
+.B stubgen
+reads
+from stdin and writes to stdout.  This facility is provided so that code
+may be run through a preprocessor first. When doing stdio, the -q option
+is implicit.
+.PP
+For each input file,
+.B stubgen
+first looks for a code file by the
+same name in the working directory.  If such a code file exists, it is
+first scanned for member function definitions.  Then,
+.B stubgen
+runs
+through the corresponding header file, looking for prototypes that don't
+yet exist in the code file.
+.PP
+To compare two methods,
+.B stubgen
+compares the \fIsignature\fR of
+the two methods.  A signature is comprised of:
+.RS 4
+* The name of the class that the method belongs to.
+.br
+* The name of the method.
+.br
+* The list of arguments to the method.
+.br
+* Whether the method is 'const' or not.
+.br
+* The 'throw' declaration, if any.
+.br
+* The template declaration, if any.
+.RE
+.PP
+.B stubgen
+won't expand a method if:
+.RS 4
+* A method with the same signature exists in the code
+.br
+\&  file.
+.br
+* The method is inlined in the header file.
+.br
+* The method is pure virtual.
+.RE
+.PP
+By default, block method headers are generated (see 
+.B METHOD HEADER STYLES
+below) in a code file.  The corresponding header file will
+be #include'd in the code file.
+.B stubgen
+appends to whatever code
+file you have around, so it won't accidentally clobber your existing
+code.
+.SH OPTIONS
+.TP 5
+.B \-h
+Display usage information.
+.TP 5
+.B \-q
+Quiet mode, no status information while generating code.
+.TP 5
+.B \-r
+Make RCS-style file headers, like the following example:
+.EX
+/*
+ *  FILE: MyClass.cpp
+ *  AUTH: Michael Radwin <mradwin>
+ *
+ *  DESC: 
+ *
+ *  DATE: Mon Apr 20 17:06:24 1998
+ *   \fP$\fRId$
+ *
+ *  \fP$\fRLog$
+ *
+ */
+.EE
+.TP 5
+.B \-i
+Don't insert a #include "MyClass.h" directive in MyClass.cpp
+.TP 5
+.B \-v
+Display version information.
+.TP 5
+.B \-g
+Generate dummy return statements for methods.  For example:
+.EX
+int
+MyClass::sampleFunc(char c1, char c2, char c3) 
+{
+    int dummy;
+
+    return dummy;
+}
+.EE
+
+For methods that return a pointer type (those that have a "*" in the
+return type), NULL will be returned instead of creating a dummy local
+variable.  No dummy return value will be produced for methods that
+return a reference type (those that have a "&" in the return type),
+since they require an lvalue.
+.TP 5
+.B \-a
+Split function arguments over multiple lines, like the following
+example:
+.EX
+int
+MyClass::sampleFunc(char c1,
+                    char c2,
+                    char c3) 
+{
+}
+.EE
+.TP 5
+.BI \-e " ext"
+Generate source files with extension '.ext' (default '.cpp').
+.TP 5
+.BI \-t " dir"
+Put the generated files in the directory 'dir' (default: ./).
+.TP 5
+.B \-l
+Put return type and function name on the same line.
+.EX
+int MyClass::sampleFunc(char c1, char c2, char c3) 
+{
+}
+.EE
+Instead of
+.EX
+int
+MyClass::sampleFunc(char c1, char c2, char c3) 
+{
+}
+.EE
+.TP 5
+.B \-N
+Do not generate a file header.
+.TP 5
+.B \-c
+Use cerrs to display the name of the method within the body of the
+expanded method as below:
+.EX
+cerr << "MyClass::sampleFunc()" << endl;
+.EE
+This will insert a #include <iostream.h> in the code file.
+.TP 5
+.B \-d
+Use the dprintf macro to display the name of the method within the
+body of the expanded method as below:
+.EX
+dprintf(("MyClass::sampleFunc()\\n"));
+.EE
+This will insert a #include <Debug.H> in the code file.
+.SS METHOD HEADER STYLES
+.TP 5
+.B \-b
+Block method headers (default):
+.EX
+/***********************************************
+ *  Method: MyClass::sampleFunc()
+ *  Params: char c1, char c2, char c3
+ * Returns: int
+ * Effects: 
+ ***********************************************/
+.EE
+.TP 5
+.B \-f
+Full method headers: like block, but less asterisks:
+.EX
+/*
+ *  Method: MyClass::sampleFunc()
+ *  Params: char c1, char c2, char c3
+ * Returns: int
+ * Effects: 
+ */
+.EE
+.TP 5
+.B \-s
+Simple method headers:
+.EX
+/*
+ *  Method: MyClass::sampleFunc()
+ *   Descr: 
+ */
+.EE
+.TP 5
+.B \-n
+No method headers.
+.SH ENVIRONMENT
+.PP
+If the variable
+.SB STUBGEN_DOM
+is set in the environment,
+.B stubgen
+will append the user's domain
+to the account number the USER header comment, yielding the author's
+e-mail address.
+.SH FILES
+.PD 0
+.TP 30
+/tmp/$USER-stubgen.log
+log file for debugging
+.TP
+Debug.[CH]
+debugging routines for -d option
+.PD
+.SH BUGS
+.PP
+Parse fails if a function has an implicit return value of 'int'.
+Workaround: explicitly declare the return type of the function.
+.PP
+Function pointer syntax is not parsed correctly.
+.PP
+Nested classes don't know about template declarations.  In general,
+there is poor recognition of templated code.
+.PP
+Users can't define their own debugging code or method and file header
+styles.
+.SH AUTHORS
+Michael J. Radwin <michael@radwin.org>
+.br
+http://www.radwin.org/michael/
+.PP
+Contributions from Raphael Assenat <raph@raphnet.net>
+.PP
+.B stubgen
+also borrows code and design from:
+.RS 4
+Jutta Degener's 1995 ANSI C grammar (based on Jeff Lee's 1985
+implementation).
+.br
+\&   ftp://ftp.uu.net/usenet/net.sources/ansi.c.grammar.Z
+.br
+\&   http://www.lysator.liu.se/c/ANSI-C-grammar-l.html
+.br
+\&   http://www.lysator.liu.se/c/ANSI-C-grammar-y.html
+.PP
+Graham D. Parrington's Stub Generator for the Arjuna project at the
+University of Newcastle upon Tyne.
+.br
+\&   http://arjuna.ncl.ac.uk/
+.RE

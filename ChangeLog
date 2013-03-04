@@ -1,0 +1,584 @@
+2011-05-11
+
+	* Dushara <nidujay@gmail.com> contributed the -p and -I flags to
+	make it easier to make stubs for 3rd party tools (e.g. #include
+	<wx/string.h>)
+
+2004-05-12
+
+	* Added -N and -l flags courtesy Raphael Assenat
+	<raph@raphnet.net>
+
+	* No longer bundling getopt() and basename() implementations since
+	these are standard in modern libc.
+
+	* Switched to BSD License
+
+1998-09-14
+
+	* main.c: Version 2.05
+
+1998-07-27
+
+	* lexer.l: added some c++ keywords
+	need to handle typename, using, and namespace
+
+1998-07-06
+
+	* main.c, parser.y:
+	removed extra space from throw_decl, cleaned up memory leak
+	in ctor skeleton
+
+1998-06-12
+
+	* main.c: added support for .hh
+
+1998-06-11
+
+	* stubgen.1, README: Updated descriptive text
+
+	* main.c, stubgen.1: changed standard extension to .cpp (previously .C)
+	and added .hpp/.hxx support for header files
+
+	* main.c: changed revision to thousands-based integer
+
+	* main.c, parser.y, stubgen.1, table.c, table.h:
+	allow for empty class declarations, such as
+	class Element {};
+	also, differentiate structs from classes with
+	new STRUCT_KIND tag.
+	New version: 2.04
+
+1998-05-27
+
+	* pathname.c: made strip_trailing_slashes static
+
+	* main.c: removed revision log from comment header
+
+	* README, main.c, stubgen.1: radwin.org
+
+	* pathname.h, table.h, util.c, util.h:
+	adorned header files with __cplusplus macro
+
+1998-05-11
+
+	* README: Bumped build number.
+
+	* README, Makefile, lexer.l, main.c, parser.y, pathname.c, pathname.h, stubgen.1, table.c, table.h, util.c, util.h:
+	Version 2.03 (updated copyright information).
+
+	* stubgen.1: method header "styles" vs. "options"
+
+	* stubgen.1: changed the bulleted lists and added web page
+
+1998-04-21
+
+	* stubgen.1:
+	fixed RCS id string by blocking out with useless nroff macros
+
+1998-04-20
+
+	* stubgen.1: added lots of examples
+
+1998-04-07
+
+	* README: added supported platforms section
+
+	* README: bumped version number, added build number, included
+	ChangeLog in file listing.
+
+	* parser.y: changed error-handling code significantly.
+	several functions now return a value, and instead of
+	calling fatal(), we do a YYABORT or YYERROR to get out
+	of the parsing state.
+	New version: 2.02.
+
+	* main.c: removed YYDEBUG, and useless reference to yytext.
+	setting tokens_seen state to 0.
+	New version: 2.02.
+
+	* table.c: made warning go away regarding malloc() cast.
+
+	* util.c, util.h:
+	made some warnings go away, removed extra yyerror() prototype.
+
+	* lexer.l: changed error-handling code significantly.  functions
+	like count() are now contributing to linebuf so we get correct
+	parse error messages during lineno == 1 and other situations.
+	also, instead of calling fatal() for collect*() functions,
+	we return -1 and let the parser recover more gracefully.
+
+	* Makefile: removed YYDEBUG
+
+	* table.c: misc. changes
+
+1998-03-27
+
+	* main.c, parser.y:
+	working on slightly better error recovery; not done yet.
+
+	* stubgen.1: misc. changes
+
+	* main.c, parser.y, table.c, table.h:
+	added multi-line function parameters
+	also changed pointer and reference (* and &) types so there
+	is no trailing space before the parameter name.
+
+1998-03-09
+
+	* stubgen.1: added -g option information
+
+	* main.c: misc. changes
+
+1998-02-27
+
+	* Makefile: clean rule
+
+1998-02-02
+
+	* main.c: changed temp pathname routines
+
+	* README, stubgen.1: misc. changes
+
+	* README: removed dev notes
+
+	* stubgen.1: added debug.[ch] to FILES
+
+	* README, main.c: changed version number from "2.0-beta" to "2.0"
+
+	* main.c: changed pathname of logfile
+
+	* stubgen.1: misc. changes
+
+1998-01-12
+
+	* Makefile: misc. changes
+
+	* main.c: changed fullname and login routines for a little more
+	modularity
+
+	* main.c: added win32 fullname support, but only for NT.
+
+	* Makefile, lexer.l, parser.y, pathname.c, table.c, util.c:
+	modified rcsid
+
+1998-01-05
+
+	* pathname.c: win32 stuff
+
+1997-11-26
+
+	* Makefile, table.c, table.h: commenting
+
+1997-11-13
+
+	* Makefile, README: misc. changes
+
+	* main.c: silly mistake
+
+	* main.c, parser.y: moved copyright from parser.y to main.c
+
+	* main.c: bumped revision to match parser.y
+
+	* main.c, parser.y: fixed a silly comment bug
+
+	* lexer.l, main.c, parser.y, pathname.c, table.c, util.c:
+	changed char[] to char * to make non-gcc compilers
+	a little happier.  We need to #define const /* nothing */
+	for other compilers as well.
+
+	* main.c: New file.
+
+	* Makefile, lexer.l, parser.y: moved code from parser.y to main.c
+
+	* Makefile, lexer.l, parser.y: renamed stubgen.[ly] to parser.y lexer.l
+
+1997-11-10
+
+	* parser.y: fixed command-line flags: invalid options now force usgage.
+
+	* parser.y: changed version info
+
+	* parser.y:
+	fixed a long-standing bug with -b option.  a typo was causing
+	the -b flag to be ignored.
+
+	* lexer.l, parser.y, util.c, util.h: changed fatal()
+
+1997-11-07
+
+	* Makefile: misc. changes
+
+1997-11-04
+
+	* lexer.l, parser.y, table.c, util.c, util.h:
+	Modified logging routines.
+
+	* Makefile, parser.y: Made some compiler warnings disappear.
+
+1997-11-01
+
+	* stubgen.1: removed the bug about error-handling!
+
+	* parser.y: new Revision string and usage info
+
+	* lexer.l, parser.y, table.c:
+	greatly improved error-recovery.  errors no longer spill over
+	into other files because the yyerror state is properly reset.
+
+	* Makefile, stubgen.1: misc. changes
+
+	* stubgen.1: id
+
+1997-10-26
+
+	* stubgen.1: misc. changes
+
+	* stubgen.1: Give credit in manpage, and also remove the bufsize[] BUG
+
+	* parser.y:
+	fixed constant_value so it supports simple arithmetic.  it's
+	not as robust as full expressions, but this will handle the
+	char buffer[BUFSIZE + 1] problem.
+
+	Also removed expansion rules that simply did { $$ = $1; } because
+	that action is implicit anyway.
+
+	* lexer.l, parser.y, util.c, util.h:
+	changed inform_user and fatal functions to use varargs
+
+	* lexer.l: support macros within comments, etc.
+
+	* util.c, util.h: removeDefaultValues() not needed
+
+	* Makefile: clean
+
+	* Makefile: clean rule
+
+	* parser.y: Fixed this bug:
+	stubgen dies on the following because the protected section is empty:
+
+	class WidgetCsg : public WidgetLens {
+	 protected:
+
+	 public:
+	     virtual ~WidgetCsg() {}
+	              WidgetCsg();
+	};
+
+	Error:
+	stubgen version 2.0-beta $Revision: 1.8 $.
+	parse error at line 4, file test.H:
+	 public:
+	      ^
+
+1997-10-16
+
+	* stubgen.1: bugs
+
+	* stubgen.1: added some more BUGs
+
+	* lexer.l, parser.y:
+	added support for elipses, static member/array initializers,
+	and bitfields.
+
+	* stubgen.1: misc. changes
+
+	* README: added win32 stuff
+
+	* table.c: compiler warning
+
+	* lexer.l: Fixed compiler warning on win32 from <ctype.h> and isspace()
+
+	* parser.y: cleaned up usage info
+
+	* getopt.c: misc. changes
+
+	* stubgen.1: macros fixed!
+
+	* lexer.l, parser.y, table.c, table.h:
+	handle extern "C" blocks better now, and support multi-line
+	macros.  still need error-checking.
+
+1997-10-15
+
+	* lexer.l, parser.y, table.c, table.h:
+	changed tons of names.  stubelem -> sytaxelem,
+	stubin -> infile, stubout -> outfile, stublog -> logfile.
+
+	* lexer.l, table.c, table.h, util.c, util.h:
+	rearranged table.[ch] and util.[ch] so that util pkg
+	knows nothing about stubelems.
+
+	* parser.y: fixed up function_hdr
+
+	* parser.y: misc. changes
+
+	* lexer.l, parser.y: added support for 'extern "C" { ... }' blocks.
+
+	* stubgen.1: misc. changes
+
+	* README, stubgen.1: changed some spelling errors
+
+	* Makefile: misc. changes
+
+	* stubgen.1: fixed extern "c" bug!
+
+1997-09-26
+
+	* parser.y: now allow "struct foobar *f" to appear in a parameter
+	list or as a variable decl.  Had to remove the
+	class_or_struct rule and blow up the class_specifier
+	description.
+
+	* parser.y:
+	fixed memory leak involving template decls in skeleton code.
+	Leads me to believe that skel_elemcmp() is flawed, because
+	it may rely in parent->templ info.
+
+	* stubgen.1: removed note about signatures not matching
+
+	* parser.y, table.c, table.h, util.c:
+	changed parameter handing from char *'s to an argument type
+	to facilitate comparisons between skeleton code
+	and header code.  Now we can correctly recognize different
+	parameter names while still maintaining the same signature.
+
+1997-09-25
+
+	* README: misc. changes
+
+	* parser.y: added better base type support -- recognize things like
+	"long long" and "short int" now.
+
+1997-09-19
+
+	* Makefile: misc. changes
+
+	* Makefile: removed tar rule
+
+	* parser.y: allowed an instance name to come after a class, struct,
+	union, or enum.  This improves parseability of typedefs
+	commonly found in c header files, although true typedefs are
+	not understood.
+
+	* Makefile: misc. changes
+
+	* README: New file.
+
+1997-09-15
+
+	* Makefile, parser.y, table.c, table.h:
+	did more revision on the SGDEBUG stuff
+
+	* parser.y: allow logging to be compiled out by turning off SGDEBUG
+
+	* Makefile: tar rule updated
+
+1997-09-11
+
+	* parser.y: duh, silly me.  messed up compilation.
+
+	* parser.y: Revision string inserted in usage
+
+	* parser.y: string copyright added to code for binary copyright.
+
+	* parser.y: some more compactness of grammar with parameter_list_opt
+	and also ampersand_opt
+
+	* Makefile, parser.y, stubgen.1:
+	better template support, but still poor
+
+1997-09-08
+
+	* parser.y: changes to error-handling code.
+	also got rid of the %type <flag> for the top-level rules
+
+	* util.c: misc. changes
+
+	* stubgen.1: New file.
+
+	* parser.y: cleaned up options and usage info.
+
+1997-09-05
+
+	* parser.y: changed options for .ext instead of -l or -x
+
+	* Makefile: misc. changes
+
+	* getopt.c, getopt.h: New file.
+
+	* lexer.l, parser.y, table.c, table.h, util.c:
+	works for scanning old versions, except for parameter
+	names that differ between .H and .C files.
+
+	* lexer.l: rcsid
+
+	* lexer.l, parser.y, pathname.c, pathname.h, table.c, table.h, util.c, util.h:
+	GPL-ized code.
+
+	* lexer.l: changed email address to acm.org
+
+	* parser.y, pathname.c, pathname.h, table.c, table.h, util.c, util.h:
+	some simple cleanup before GPL-izing the code
+
+1997-09-04
+
+	* Makefile, parser.y, table.c: whoo-hoo!  by blowing up the description
+	exponentially, it works!
+
+1997-03-20
+
+	* Makefile, parser.y, table.c, table.h, util.c, util.h:
+	renamed stubelem to stubelem_t, cleaned up throw_decl
+
+1996-10-02
+
+	* parser.y: using pathname.h instead of libgen.h
+
+	* pathname.c, pathname.h, pathname_tst.c: New file.
+
+1996-09-12
+
+	* Makefile, lexer.l, parser.y, table.c, table.h, util.c, util.h:
+	Added throw decl recognition (great, another 4 bytes in stubelem)
+	and cleaned up the grammar so that const_opt appears in far fewer
+	places.  const_opt is by default 0 as well, so we don't need to
+	pass it as an arg to new_elem().
+
+	I also added a fix to a potential bug with the MINIT and INLIN
+	exclusive start states.  I think they could have been confused
+	by braces within comments, so now I'm grabbing comments in those
+	states as well.
+
+1996-09-11
+
+	* Makefile, parser.y, table.h, util.c, util.h:
+	changed expand strategy.  Don't expand while parsing now;
+	enqueue as we go along and expand at the end.  Eventually
+	we'll need to provide similar behavior for when we parse
+	.C files
+
+	* table.c, table.h: Just added the RCS header, that's all
+
+	* Makefile, lexer.l, parser.y, table.c, table.h:
+	No concrete changes in code.  Just added some sanity by
+	factoring out code into util.[ch] and putting some prototypes
+	that were in table.h into stubgen.y where they belong.
+
+	* util.c, util.h: New file.
+
+1996-09-06
+
+	* table.h: defined the some_KIND constants for clarity.
+
+	* parser.y: defined the some_KIND constants for clarity, and made
+	expandClass return immediately if it was give something other
+	than a CLASS_KIND element.
+
+	* Makefile: Added TAGS table rule.
+
+	* parser.y: Almost there with expanded operator goodies.  Still need
+	to get OPERATOR type_name to work.
+
+1996-09-04
+
+	* parser.y, table.c, table.h:
+	nested classes work and default arguments are now removed
+	from the parameter lists.
+
+	* parser.y: non-functional expanded code.  needs work.
+
+1996-09-01
+
+	* parser.y: put the expanded_operator code back in as a useless rule.
+	oughta think about fixing it up if possible
+
+	* lexer.l, parser.y, table.h:
+	Added collectMemberInitList() function, which is similar
+	to collectInlineDef() and also the exclusive state MINIT
+
+	* Makefile: removed log info from header
+
+	* table.c, table.h: changed from 2-tabs to 4-tabs
+
+1996-08-22
+
+	* lexer.l, parser.y: fixed up some more portability things
+
+1996-08-21
+
+	* lexer.l, parser.y: added parse error message (using O'Reilly p. 274)
+
+	* parser.y: added support for template instantiation in the type_name
+	rule.  surprisingly it didn't cause any shift/reduce conflicts.
+
+	* lexer.l: removed the buffer for inlines.  we don't care anyway.
+	now we can't overflow on inlines!
+
+	* lexer.l, parser.y: added some cpp directives for porting to WIN32
+
+1996-08-20
+
+	* Makefile: made stubgen.tar depend on the source files
+
+	* Makefile, parser.y, table.h:
+	approaching stability and usability.  command line arguments
+	are handled now and the fopens and fcloses appear to work.
+
+	* parser.y: added initial support for optind but it is incomplete.
+
+1996-08-19
+
+	* parser.y: misordered args, fixed bug
+
+	* parser.y: RCS got confused with the RCS-style header goodies.
+	got it cleaned up now.
+
+	* Makefile: Removed main.c -- now all in stubgen.y.  Also
+	fixed silly makefile header
+
+	* parser.y: Removed the expanded code checking and added
+	lots of code that duplicates what stubgen.pl did.
+	still need options pretty badly
+
+	* lexer.l: no echo now
+
+	* table.c, table.h: now reversing the list of members so they come out
+	in FIFO instead of LIFO
+
+1996-08-17
+
+	* table.h: added the RCS header
+
+	* parser.y: added the expanded operator code, cleaned up tabs.
+	consider putting all of the expanded code in another
+	grammar - this one is getting cluttered.
+
+1996-08-15
+
+	* table.c: New file.
+
+	* table.h:
+	rearranged some goodies so the declarations are now in table.c
+	instead of this one.
+
+	* lexer.l: misc. changes
+
+	* parser.y: added template control and fixed up the expanded
+	function recognition.  also add multiple variables
+	such as int a, b, c;
+
+	* Makefile: fixed for table.c and table.h
+
+1996-08-14
+
+	* Makefile: removed the -L option from flex so we can track #lines
+
+	* Makefile: added header with modfication history control.
+	compiles just fine.  :-)
+
+	* Makefile, lexer.l: misc. changes
+
+	* Makefile, lexer.l, parser.y, table.h: New file.
+
