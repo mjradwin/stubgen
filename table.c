@@ -455,3 +455,39 @@ void clear_skeleton_queue()
 
   skel_head = NULL;
 }
+
+/* the queue of non-member functions found in the .H file, possibly to be expanded */
+static skelnode_t *fn_head = NULL;
+static skelnode_t *fn_tail = NULL;
+static skelnode_t **ptr_to_next = &fn_head;
+
+void enqueue_non_member_function(syntaxelem_t *elt)
+{
+    skelnode_t *new_function;
+
+    new_function = (skelnode_t *)malloc(sizeof(skelnode_t));
+    new_function->elt = elt;
+    new_function->next = NULL;
+
+    fn_tail = new_function;
+    *ptr_to_next = new_function;
+    ptr_to_next = &new_function->next;
+}
+
+syntaxelem_t * dequeue_non_member_function()
+{
+    skelnode_t *old_head = fn_head;
+    syntaxelem_t *to_return = fn_head->elt;
+
+    assert(fn_head != NULL);
+    fn_head = fn_head->next;
+    free(old_head);
+
+    return to_return;
+}
+
+int non_member_function_queue_empty()
+{
+    return fn_head == NULL;
+}
+

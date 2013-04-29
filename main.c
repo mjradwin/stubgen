@@ -61,6 +61,7 @@
 /* protos */
 static void debug_printf(syntaxelem_t *);
 static void generate_skel(syntaxelem_t *);
+static void generate_function_skel(syntaxelem_t *);
 static void print_function(syntaxelem_t *);
 static void function_hdr(syntaxelem_t *);
 static void file_hdr();
@@ -149,15 +150,7 @@ static void generate_skel(syntaxelem_t *elt)
 
     for (e = elt->children; e != NULL; e = e->next) {
 	if (e->kind == FUNC_KIND) {
-	  char *arg_str = args_to_string(e->args, 0);
-	    log_printf(">>>>>>> generating %s: %s %s::%s(%s) %s\n",
-		      string_kind(e->kind),
-		      e->ret_type, elt->name, e->name, arg_str,
-		      (e->const_flag) ? "const" : "");
-	  free(arg_str);
-	    print_se(e);
-	    print_function(e);
-	    e->kind = DONE_FUNC_KIND;
+        generate_function_skel(e);
 	} else if (e->kind == CLASS_KIND || e->kind == STRUCT_KIND) {
 	    /* nested class */
 	    char *tmp_str = (char *) malloc(strlen(elt->name) + strlen(e->name) + 3);
@@ -186,6 +179,19 @@ static void generate_skel(syntaxelem_t *elt)
     inform_user("\n");
 
     elt->kind = DONE_CLASS_KIND;
+}
+
+static void generate_function_skel (syntaxelem_t * e)
+{
+    char *arg_str = args_to_string (e->args, 0);
+    log_printf (">>>>>>> generating %s: %s %s(%s) %s\n",
+                string_kind (e->kind),
+                e->ret_type, e->name, arg_str,
+                (e->const_flag) ? "const" : "");
+    free (arg_str);
+    print_se (e);
+    print_function (e);
+    e->kind = DONE_FUNC_KIND;
 }
 
 
@@ -239,20 +245,47 @@ static void print_function(syntaxelem_t *elt)
 	char *arg_str;
 
 	if (opt_l) {
-		fprintf(outfile, "%s%s%s::%s(",
-			elt->ret_type, (strcmp(elt->ret_type, "") ? " " : ""),
-			elt->parent->name, elt->name);
+        if (elt->parent)
+        {
+            fprintf(outfile, "%s%s%s::%s(",
+                elt->ret_type, (strcmp(elt->ret_type, "") ? " " : ""),
+                elt->parent->name, elt->name);
+        }
+        else
+        {
+            fprintf(outfile, "%s%s%s(",
+                elt->ret_type, (strcmp(elt->ret_type, "") ? " " : ""),
+                elt->name);
+        }
 	}
 	else
 	{
-		fprintf(outfile, "%s%s%s::%s(",
-			elt->ret_type, (strcmp(elt->ret_type, "") ? "\n" : ""),
-			elt->parent->name, elt->name);
+        if (elt->parent)
+        {
+            fprintf(outfile, "%s%s%s::%s(",
+                elt->ret_type, (strcmp(elt->ret_type, "") ? "\n" : ""),
+                elt->parent->name, elt->name);
+        }
+        else
+        {
+            fprintf(outfile, "%s%s%s(",
+                elt->ret_type, (strcmp(elt->ret_type, "") ? "\n" : ""),
+                elt->name);
+        }
 	}
 
-	arg_str = args_to_string(
-	    elt->args, 
-	    opt_a ? strlen(elt->parent->name) + strlen(elt->name) + 3 : 0);
+    if (elt->parent)
+    {
+        arg_str = args_to_string(
+            elt->args, 
+            opt_a ? strlen(elt->parent->name) + strlen(elt->name) + 3 : 0);
+    }
+    else
+    {
+        arg_str = args_to_string(
+            elt->args, 
+            opt_a ? strlen(elt->name) + 3 : 0);
+    }
 	
 	fprintf(outfile, "%s)", arg_str);
 	free(arg_str);
@@ -276,8 +309,17 @@ static void function_hdr(syntaxelem_t *elt)
     return;
   
   fprintf(outfile, "/%s\n", (opt_b ? lots_of_stars : "*"));
-  fprintf(outfile, " *  Method: %s::%s%s\n", elt->parent->name, elt->name,
-	  (opt_s ? "()" : ""));
+  
+  if (elt->parent)
+  {
+      fprintf(outfile, " *  Method: %s::%s%s\n", elt->parent->name, elt->name,
+          (opt_s ? "()" : ""));
+  }
+  else
+  {
+      fprintf(outfile, " *  Method: %s%s\n", elt->name,
+          (opt_s ? "()" : ""));
+  }
 
   if (opt_s) {
     fprintf(outfile, " *   Descr: \n");
@@ -521,6 +563,13 @@ static void scan_and_generate(FILE *infile)
     generate_skel(elt);
   }
 
+    log_printf ("expanding non member functions...\n");
+    while (!non_member_function_queue_empty ())
+    {
+        syntaxelem_t *elt = dequeue_non_member_function ();
+        generate_function_skel (elt);
+    }
+    
   log_printf("closing %s\n", outPath);
   free(outPath);
   outPath = NULL;

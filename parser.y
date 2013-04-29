@@ -473,11 +473,7 @@ declaration_specifiers
     if ($1->kind == CLASS_KIND || $1->kind == STRUCT_KIND) {
 	enqueue_class($1);
     } else {
-	log_printf("\nIGNORING      dec_spec : mem_spec (%s) --",
-		  string_kind($1->kind));
-	print_se($1);
-	log_printf("END IGNORING  dec_spec : mem_spec (%s)\n",
-		  string_kind($1->kind));
+        enqueue_non_member_function($1);
     }
 }
 	| forward_decl

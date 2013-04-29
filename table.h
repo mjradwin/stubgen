@@ -128,6 +128,10 @@ void enqueue_skeleton(syntaxelem_t *);
 syntaxelem_t * find_skeleton(syntaxelem_t *);
 void clear_skeleton_queue();
 
+void enqueue_non_member_function(syntaxelem_t *elt);
+syntaxelem_t * dequeue_non_member_function();
+int non_member_function_queue_empty();
+
 #ifdef	__cplusplus
 }
 #endif
