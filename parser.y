@@ -473,7 +473,9 @@ declaration_specifiers
     if ($1->kind == CLASS_KIND || $1->kind == STRUCT_KIND) {
 	enqueue_class($1);
     } else {
-        enqueue_non_member_function($1);
+        if ($1->kind == FUNC_KIND) {
+            enqueue_non_member_function($1);
+        }
     }
 }
 	| forward_decl
@@ -1495,7 +1497,7 @@ class_specifier
 {
   syntaxelem_t *child;
   /* ret_type, name, args, kind */
-  syntaxelem_t *tmp_elem = new_elem(strdup(""), "unnamed_struct",
+  syntaxelem_t *tmp_elem = new_elem(strdup(""), strdup("unnamed_struct"),
 				    NULL, IGNORE_KIND);
   tmp_elem->children = reverse_list($3);
   
