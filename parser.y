@@ -391,7 +391,7 @@ extern int lineno;
 %token SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN AND_ASSIGN
 %token XOR_ASSIGN OR_ASSIGN CLCL MEM_PTR_OP
 
-%token FRIEND OPERATOR CONST CLASS STRUCT UNION ENUM 
+%token FRIEND OPERATOR CONST CLASS STRUCT UNION ENUM TYPENAME
 %token PROTECTED PRIVATE PUBLIC EXTERN ELIPSIS
 
 %type <string> simple_type_name simple_signed_type non_reference_type
@@ -1659,6 +1659,13 @@ template_arg
 {
   char *tmp_str = (char *) malloc(strlen($2) + 7);
   sprintf(tmp_str, "class %s", $2);
+  free($2);
+  $$ = tmp_str;
+}
+	| TYPENAME IDENTIFIER
+{
+  char *tmp_str = (char *) malloc(strlen($2) + 10);
+  sprintf(tmp_str, "typename %s", $2);
   free($2);
   $$ = tmp_str;
 }

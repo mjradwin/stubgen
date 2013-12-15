@@ -246,8 +246,8 @@ int tokens_seen;    /* set to 0        at beginning of each file */
 "enum"			{ count(); RETURN_VAL(ENUM); }
 "const"			{ count(); RETURN_VAL(CONST); }
 "template"		{ count(); RETURN_VAL(TEMPLATE); }
+"typename"      { count(); RETURN_VAL(TYPENAME); }
 
-"typename"              { count(); tokens_seen++; /* FIXME */ }
 "using"                 { count(); tokens_seen++; /* FIXME */ }
 "namespace"             { count(); RETURN_VAL(CLASS); /* FIXME */ }
 
