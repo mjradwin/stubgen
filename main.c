@@ -335,7 +335,7 @@ static void function_hdr(syntaxelem_t *elt)
 
   fprintf(outfile, " %s/\n", (opt_b ? lots_of_stars : "*"));
 }
-
+#if 0
 #ifdef WIN32
 static BOOL win32_fullname(const char *login, char *dest)
 {
@@ -358,7 +358,7 @@ static BOOL win32_fullname(const char *login, char *dest)
     return TRUE;
 }
 #endif /* WIN32 */
-
+#endif /* 0 */
 static char *sg_getlogin()
 {
     static char *login;
@@ -403,7 +403,7 @@ static char *sg_getfullname(const char *login)
 #ifdef WIN32
     fullname = fullname_buffer;
     
-    if (win32_fullname(login, fullname_buffer) == FALSE)
+    /*if (win32_fullname(login, fullname_buffer) == FALSE)*/
 	fullname = "nobody";
 #else /* !WIN32 */
     if ((fullname = getenv("NAME")) == NULL) {
