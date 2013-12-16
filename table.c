@@ -66,7 +66,7 @@ void init_tables()
 	elt->name = NULL;
 	elt->ret_type = NULL;
 	elt->args = NULL;
-	elt->templ = NULL;
+	elt->tmpl = NULL;
 	elt->parent = NULL;
 	elt->children = NULL;
 	elt->throw_decl = NULL;
@@ -88,7 +88,7 @@ void free_tables()
       free_args(elt->args);
       
       if (elt->throw_decl) free(elt->throw_decl);
-      if (elt->templ) free(elt->templ);
+      if (elt->tmpl) free(elt->tmpl);
     }
   }
 }
@@ -227,16 +227,16 @@ int skel_elemcmp(syntaxelem_t *skel_elem, syntaxelem_t *hdr_elem)
     return 1;
   
   /* 
-   * templ and throw_decl are allowed to be NULL,
+   * tmpl and throw_decl are allowed to be NULL,
    * so we must not pass them onto strcmp without
    * a check first.
    */
-  if (skel_elem->templ != NULL) {
-    if (hdr_elem->templ == NULL)
+  if (skel_elem->tmpl != NULL) {
+    if (hdr_elem->tmpl == NULL)
       return 1;
-    else if (strcmp(skel_elem->templ, hdr_elem->templ) != 0)
-      return 1;
-  } else if (hdr_elem->templ != NULL) {
+    else if (strcmp(skel_elem->tmpl->second, hdr_elem->tmpl->second) != 0)
+      return 1; /* compares template instance arg lists. Potential for false match, if function skeletons have their templates parsed (they don't at the moment) */
+  } else if (hdr_elem->tmpl != NULL) {
     return 1;
   }
   
@@ -264,9 +264,19 @@ int skel_elemcmp(syntaxelem_t *skel_elem, syntaxelem_t *hdr_elem)
    * the name, of course, is the hard part.  we gotta
    * look at the parent to make a scoped name.
    */
-  tmp_str = (char *) malloc(strlen(hdr_elem->parent->name) +
-			    strlen(hdr_elem->name) + 3);
-  sprintf(tmp_str, "%s::%s", hdr_elem->parent->name, hdr_elem->name);
+  if (hdr_elem->parent->tmpl)
+  {
+	  tmp_str = (char *)malloc(strlen(hdr_elem->parent->name) +
+		  strlen(hdr_elem->parent->tmpl->second) +
+		  strlen(hdr_elem->name) + 3);
+	  sprintf(tmp_str, "%s%s::%s", hdr_elem->parent->name, hdr_elem->parent->tmpl->second, hdr_elem->name);
+  }
+  else
+  {
+	  tmp_str = (char *)malloc(strlen(hdr_elem->parent->name) +
+		  strlen(hdr_elem->name) + 3);
+	  sprintf(tmp_str, "%s::%s", hdr_elem->parent->name, hdr_elem->name);
+  }
 
   result = strcmp(skel_elem->name, tmp_str);
   free(tmp_str);
@@ -365,7 +375,7 @@ void print_se(syntaxelem_t *elt)
   log_printf("        const: %d\n", elt->const_flag);
   log_printf("         kind: %s\n", string_kind(elt->kind));
   log_printf("        throw: %s\n", (elt->throw_decl)? elt->throw_decl : "NULL");
-  log_printf("        templ: %s\n\n", (elt->templ)? elt->templ : "NULL");
+  log_printf("         tmpl: %s\n\n", (elt->tmpl)? elt->tmpl->first : "NULL");
   free(arg_str);
 }
 #endif /* SGDEBUG */

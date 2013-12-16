@@ -378,6 +378,7 @@ extern int lineno;
 %union {
   char *string;
   syntaxelem_t *elt;
+  str_pair_t *strp;
   arg_t *arg;
   int flag;
 }
@@ -401,7 +402,7 @@ extern int lineno;
 %type <string> variable_specifier_list union_specifier
 %type <string> constant_value multiple_variable_specifier
 %type <string> enum_specifier enumerator_list enumerator 
-%type <string> template_specifier template_arg template_arg_list
+%type <strp> template_specifier template_arg template_arg_list 
 %type <string> template_instance_arg template_instance_arg_list
 %type <string> throw_decl throw_list variable_name bitfield_savvy_identifier
 %type <string> primary_expression expression
@@ -1471,7 +1472,7 @@ class_specifier
   /* ret_type, name, args, kind */
   syntaxelem_t *tmp_elem = new_elem(strdup(""), $3, NULL, CLASS_KIND);
   tmp_elem->children = reverse_list($5);
-  tmp_elem->templ = $1;
+  tmp_elem->tmpl = $1;
   
   for (child = tmp_elem->children; child != NULL; child = child->next)
       child->parent = tmp_elem;
@@ -1485,7 +1486,7 @@ class_specifier
   /* ret_type, name, args, kind */
   syntaxelem_t *tmp_elem = new_elem(strdup(""), $3, NULL, CLASS_KIND);
   tmp_elem->children = reverse_list($7);
-  tmp_elem->templ = $1;
+  tmp_elem->tmpl = $1;
   
   for (child = tmp_elem->children; child != NULL; child = child->next)
       child->parent = tmp_elem;
@@ -1539,7 +1540,7 @@ class_specifier
   /* ret_type, name, args, kind */
   syntaxelem_t *tmp_elem = new_elem(strdup(""), $3, NULL, STRUCT_KIND);
   tmp_elem->children = reverse_list($5);
-  tmp_elem->templ = $1;
+  tmp_elem->tmpl = $1;
   
   for (child = tmp_elem->children; child != NULL; child = child->next)
       child->parent = tmp_elem;
@@ -1553,7 +1554,7 @@ class_specifier
   /* ret_type, name, args, kind */
   syntaxelem_t *tmp_elem = new_elem(strdup(""), $3, NULL, STRUCT_KIND);
   tmp_elem->children = reverse_list($7);
-  tmp_elem->templ = $1;
+  tmp_elem->tmpl = $1;
   
   for (child = tmp_elem->children; child != NULL; child = child->next)
       child->parent = tmp_elem;
@@ -1657,25 +1658,31 @@ mem_type_specifier
 template_arg
 	: CLASS IDENTIFIER
 {
-  char *tmp_str = (char *) malloc(strlen($2) + 7);
-  sprintf(tmp_str, "class %s", $2);
-  free($2);
-  $$ = tmp_str;
+  str_pair_t * tmp_templ = (str_pair_t *) malloc(sizeof(str_pair_t));
+  char *tmp_spec_str = (char *) malloc(strlen($2) + 7);
+  sprintf(tmp_spec_str, "class %s", $2);
+  tmp_templ->first = tmp_spec_str;
+  tmp_templ->second = $2;
+  $$ = tmp_templ;
 }
 	| TYPENAME IDENTIFIER
 {
-  char *tmp_str = (char *) malloc(strlen($2) + 10);
-  sprintf(tmp_str, "typename %s", $2);
-  free($2);
-  $$ = tmp_str;
+  char *tmp_spec_str = (char *) malloc(strlen($2) + 10);
+  str_pair_t * tmp_templ = (str_pair_t *) malloc(sizeof(str_pair_t));
+  sprintf(tmp_spec_str, "typename %s", $2);
+  tmp_templ->first = tmp_spec_str;
+  tmp_templ->second = $2;
+  $$ = tmp_templ;
 }
 	| type_name IDENTIFIER
-{ 
-  char *tmp_str = (char *) malloc(strlen($1) + strlen($2) + 2);
-  sprintf(tmp_str, "%s %s", $1, $2);
+{
+  char *tmp_spec_str = (char *) malloc(strlen($1) + strlen($2) + 2);
+  str_pair_t * tmp_templ = (str_pair_t *) malloc(sizeof(str_pair_t));
+  sprintf(tmp_spec_str, "%s %s", $1, $2);
+  tmp_templ->first = tmp_spec_str;
+  tmp_templ->second = $2;
   free($1);
-  free($2);
-  $$ = tmp_str;
+  $$ = tmp_templ;
 }
 	;
 
@@ -1683,11 +1690,21 @@ template_arg_list
 	: template_arg
 	| template_arg_list ',' template_arg
 { 
-  char *tmp_str = (char *) malloc(strlen($1) + strlen($3) + 3);
-  sprintf(tmp_str, "%s, %s", $1, $3);
+  char *tmp_spec_str = (char *) malloc(strlen($1->first) + strlen($3->first) + 3);
+  char *tmp_inst_str = (char *) malloc(strlen($1->second) + strlen($3->second) + 3);
+  
+  str_pair_t * tmp_templ = (str_pair_t *) malloc(sizeof(str_pair_t));
+  sprintf(tmp_spec_str, "%s, %s", $1->first, $3->first);
+  sprintf(tmp_spec_str, "%s, %s", $1->second, $3->second);
+  tmp_templ->first = tmp_spec_str;
+  tmp_templ->second = tmp_inst_str;
+  free($1->first);
+  free($1->second);
   free($1);
+  free($3->first);
+  free($3->second);
   free($3);
-  $$ = tmp_str;
+  $$ = tmp_templ;
 }
 	;
 
@@ -1711,10 +1728,17 @@ template_instance_arg_list
 template_specifier
 	: TEMPLATE '<' template_arg_list '>'
 {
-  char *tmp_str = (char *) malloc(strlen($3) + 12);
-  sprintf(tmp_str, "template <%s>", $3);
+  char *tmp_spec_str = (char *) malloc(strlen($3->first) + 12);
+  char *tmp_inst_str = (char *) malloc(strlen($3->second) + 3);
+  str_pair_t * tmp_templ = (str_pair_t *) malloc(sizeof(str_pair_t));
+  sprintf(tmp_spec_str, "template <%s>", $3->first);
+  sprintf(tmp_inst_str, "<%s>", $3->second);
+  tmp_templ->first = tmp_spec_str;
+  tmp_templ->second = tmp_inst_str;
+  free($3->first);
+  free($3->second);
   free($3);
-  $$ = tmp_str;
+  $$ = tmp_templ;
 }
 	;
 
