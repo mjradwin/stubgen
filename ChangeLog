@@ -1,3 +1,15 @@
+2013-12-18
+
+	* Enabled non-member function stub generation. This allows the
+	generation of stubs for C/non-member C++ functions.
+
+	* fixed: crash on typedef of unnamed struct.
+
+        typedef unnamed struct declarations were trying to free unallocated
+        memory. In fixing this it was discovered that the unnamed structs
+        were generating non-member functions with the unnamed struct as the
+        name. This bug is also fixed in this commit.
+
 2011-05-11
 
 	* Dushara <nidujay@gmail.com> contributed the -p and -I flags to

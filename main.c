@@ -94,7 +94,7 @@ char *currentFile = "";
 static const char *lots_of_stars = 
   "***********************************************************************";
 static const char *progname = "stubgen";
-static const char *progver = "2.07";
+static const char *progver = "2.1.0";
 
 static const char *copyright =
   "Copyright (c) 2004  Michael J. Radwin";
@@ -102,7 +102,7 @@ static const char *copyright =
 static const char *version_info = 
 "Contributions from Raphael Assenat <raph@raphnet.net>\n\
 Distributed under the BSD License.\n\
-See http://www.radwin.org/michael/projects/stubgen/ for more information.\n";
+See http://www.radwin.org/michael/2011/05/10/stubgen/ for more information.\n";
 
 static const char *usage = 
 "usage: %s [-hqrivgacdlNI] [-e ext] [-t dir] [-p dir] [-{bfsn}] [infiles]\n\

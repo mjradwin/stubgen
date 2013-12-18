@@ -1,12 +1,12 @@
 stubgen - a member function stub generator for C++
-http://www.radwin.org/michael/projects/stubgen/
+http://www.radwin.org/michael/2011/05/10/stubgen/
 
-Copyright (c) 2011 Michael J. Radwin
+Copyright (c) 2013 Michael J. Radwin
 
 
 Description
 -----------
-Welcome to stubgen version 2.08.
+Welcome to stubgen version 2.1.0.
 
 stubgen is a C++ development tool that keeps code files in sync with
 their associated headers.  When it finds a member function declaration
