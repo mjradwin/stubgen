@@ -10,6 +10,13 @@ creates an empty skeleton with descriptive comment headers.  stubgen has
 several options, but see the "Brief Example" section below for an idea
 of what it can do.
 
+C++ Compatibility
+-----------------
+
+stubgen's parser does not conform to the latest C++ standard. It was developed back in 1998 as a gigantic hack that I created when I was teaching myself lex/yacc. Hacking the yacc grammar further probably isn’t a good idea, since C++ isn’t an LALR(1) language anyways. 
+
+At the time it was written it handled C++98 pretty well - but it may not handle C++03 or C++11 well at all.
+
 Brief Example
 -------------
 
