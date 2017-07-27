@@ -235,8 +235,8 @@ static void print_function(syntaxelem_t *elt)
     inform_user("%*s%s\n", inform_indent, "", elt->name);
     function_hdr(elt);
     for (e = elt->parent; e != NULL; e = e->parent) {
-      if (e->templ) {
-	fprintf(outfile, "%s\n", e->templ);
+      if (e->tmpl) {
+	fprintf(outfile, "%s\n", e->tmpl->first);
 	break;
       }
     }
@@ -247,9 +247,18 @@ static void print_function(syntaxelem_t *elt)
 	if (opt_l) {
         if (elt->parent)
         {
-            fprintf(outfile, "%s%s%s::%s(",
-                elt->ret_type, (strcmp(elt->ret_type, "") ? " " : ""),
-                elt->parent->name, elt->name);
+			if (elt->parent->tmpl)
+			{
+				fprintf(outfile, "%s%s%s%s::%s(",
+					elt->ret_type, (strcmp(elt->ret_type, "") ? " " : ""),
+					elt->parent->name, elt->parent->tmpl->second, elt->name);
+			}
+			else
+			{
+				fprintf(outfile, "%s%s%s::%s(",
+					elt->ret_type, (strcmp(elt->ret_type, "") ? " " : ""),
+					elt->parent->name, elt->name);
+			}
         }
         else
         {
@@ -262,9 +271,18 @@ static void print_function(syntaxelem_t *elt)
 	{
         if (elt->parent)
         {
-            fprintf(outfile, "%s%s%s::%s(",
-                elt->ret_type, (strcmp(elt->ret_type, "") ? "\n" : ""),
-                elt->parent->name, elt->name);
+			if (elt->parent->tmpl)
+			{
+				fprintf(outfile, "%s%s%s%s::%s(",
+					elt->ret_type, (strcmp(elt->ret_type, "") ? "\n" : ""),
+					elt->parent->name, elt->parent->tmpl->second, elt->name);
+			}
+			else
+			{
+				fprintf(outfile, "%s%s%s::%s(",
+					elt->ret_type, (strcmp(elt->ret_type, "") ? "\n" : ""),
+					elt->parent->name, elt->name);
+			}
         }
         else
         {
@@ -335,7 +353,7 @@ static void function_hdr(syntaxelem_t *elt)
 
   fprintf(outfile, " %s/\n", (opt_b ? lots_of_stars : "*"));
 }
-
+#if 0
 #ifdef WIN32
 static BOOL win32_fullname(const char *login, char *dest)
 {
@@ -358,7 +376,7 @@ static BOOL win32_fullname(const char *login, char *dest)
     return TRUE;
 }
 #endif /* WIN32 */
-
+#endif /* 0 */
 static char *sg_getlogin()
 {
     static char *login;
@@ -403,7 +421,7 @@ static char *sg_getfullname(const char *login)
 #ifdef WIN32
     fullname = fullname_buffer;
     
-    if (win32_fullname(login, fullname_buffer) == FALSE)
+    /*if (win32_fullname(login, fullname_buffer) == FALSE)*/
 	fullname = "nobody";
 #else /* !WIN32 */
     if ((fullname = getenv("NAME")) == NULL) {
@@ -616,6 +634,10 @@ int main(int argc, char **argv)
       /* open failed */
       fatal(1, "%s: cannot write to %s\n", progname, logfilename_buffer);
     }
+	else
+	{
+		inform_user("logging to %s\n", logfilename_buffer);
+	}
 #endif /* SGDEBUG */
 
     while ((c = getopt(argc, argv, OPTS)) != EOF) {

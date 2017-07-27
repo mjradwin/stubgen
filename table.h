@@ -72,6 +72,15 @@ typedef struct arg {
     struct arg *next; /* next argument.          may     be NULL */
 } arg_t;
 
+/*
+* Stores a pair of strings.
+* Neither may be NULL. Use a NULL pointer to struct instead.
+*/
+typedef struct str_pair {
+	char *first;
+	char *second;
+} str_pair_t;
+
 /* 
  * This structure is central to the program.  It might have been more
  * elegant with an object-oriented approach consisting of the following
@@ -86,7 +95,8 @@ typedef struct syntaxelem {
     char *name;        /* name of class or func. may NOT be NULL  */
     char *ret_type;    /* return type.           may NOT be NULL  */
     arg_t *args;       /* argument list.         may     be NULL  */
-    char *templ;       /* template declaration.  may     be NULL  */
+    /*char *templ;*/   /* template declaration.  may     be NULL  */
+	struct str_pair *tmpl; /* template spec+inst.may     be NULL */
     struct syntaxelem *parent;   /* parent class                  */
     struct syntaxelem *next;     /* next class or member          */
     struct syntaxelem *children; /* children of this class        */
