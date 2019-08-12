@@ -366,7 +366,7 @@ extern int collectMemberInitList();
 /* defined here in parser.y */
 static int error_recovery();
 static int yyerror(char *);
-static const char rcsid[] = "$Id: parser.y,v 1.72 1998/07/07 00:14:06 mradwin Exp $";
+//static const char rcsid[] = "$Id: parser.y,v 1.72 1998/07/07 00:14:06 mradwin Exp $";
 
 /* defined in main.c */
 extern FILE *outfile;
