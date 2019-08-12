@@ -46,7 +46,7 @@
 #include <assert.h>
 #include "util.h"
 
-static const char rcsid[] = "$Id: util.c,v 1.19 1998/05/27 22:55:20 mradwin Exp $";
+//static const char rcsid[] = "$Id: util.c,v 1.19 1998/05/27 22:55:20 mradwin Exp $";
 
 #ifdef SGDEBUG
 static FILE *logfile;

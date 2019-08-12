@@ -47,7 +47,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-static const char rcsid[] = "$Id: table.c,v 1.28 1998/06/11 14:52:09 mradwin Exp $";
+//static const char rcsid[] = "$Id: table.c,v 1.28 1998/06/11 14:52:09 mradwin Exp $";
 
 /* global table */
 static syntaxelem_t etable[NELEMS];

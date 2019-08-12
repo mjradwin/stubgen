@@ -204,7 +204,7 @@ IS			(u|U|l|L)*
    the value as a pointer */
 #define RETURN_VAL(x) tokens_seen++; yylval.flag = 37; return(x)
 
-static const char rcsid[] = "$Id: lexer.l,v 1.33 1998/07/27 19:16:57 mradwin Exp $";
+//static const char rcsid[] = "$Id: lexer.l,v 1.33 1998/07/27 19:16:57 mradwin Exp $";
 
 static void count();
 static void comment();
